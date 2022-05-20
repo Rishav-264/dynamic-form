@@ -5,10 +5,19 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
+import {
+  ParentContainer,
+  FormContainer,
+  TextInput,
+  Label,
+  Title,
+  Select,
+  PhoneInputContainer,
+  CountryCodeInput,
+  PhoneNumberInput,
+} from '../styles/form-styles';
 
 const DynamicPage = ({ steps }) => {
-  const [Title, setTitle] = useState('Test');
   const [activeStep, setActiveStep] = React.useState(0);
 
   useEffect(() => {}, []);
@@ -27,7 +36,7 @@ const DynamicPage = ({ steps }) => {
 
   return (
     <>
-      <Box sx={{ width: '100%' }}>
+      <ParentContainer>
         <Stepper activeStep={activeStep}>
           {/* {steps.map((label, index) => {
             const stepProps = {};
@@ -46,25 +55,65 @@ const DynamicPage = ({ steps }) => {
             );
           })}
         </Stepper>
-        {steps.map((step, index) => {
-          if (activeStep == index) {
-            return (
-              <>
-                <p>{step.title}</p>
-                {step.properties.map(property => {
-                  property.map(field => {
-                    console.log('Field', field.type);
-                    if (field.type === 'text') {
-                      return <p>Hello</p>;
-                    } else {
-                      return <p>{field.type}</p>;
-                    }
-                  });
-                })}
-              </>
-            );
-          }
-        })}
+        <FormContainer>
+          {steps.map((step, index) => {
+            if (activeStep == index) {
+              return (
+                <>
+                  <Title>{step.title}</Title>
+                  {console.log('Properties', step.properties)}
+                  {step.properties.map(property => {
+                    return property.map(field => {
+                      if (
+                        field.type === 'text' ||
+                        field.type === 'account_number'
+                      ) {
+                        return (
+                          <>
+                            <Label for={field.id}>{field.label}</Label>
+                            <TextInput id={field.id} type="text" />
+                          </>
+                        );
+                      }
+                      if (field.type === 'nationality') {
+                        return (
+                          <>
+                            <Label for={field.id}>{field.label}</Label>
+                            <Select id={field.id}>
+                              <option value="India">India</option>
+                              <option value="UK">United Kingdom</option>
+                            </Select>
+                          </>
+                        );
+                      }
+                      if (field.type === 'date') {
+                        return (
+                          <>
+                            <Label for={field.id}>{field.label}</Label>
+                            <TextInput id={field.id} type="date" />
+                          </>
+                        );
+                      }
+                      if (field.type === 'contact') {
+                        return (
+                          <>
+                            <Label for={field.id}>{field.label}</Label>
+                            <PhoneInputContainer>
+                              <CountryCodeInput>
+                                <option value="91">India(+91)</option>
+                              </CountryCodeInput>
+                              <PhoneNumberInput />
+                            </PhoneInputContainer>
+                          </>
+                        );
+                      }
+                    });
+                  })}
+                </>
+              );
+            }
+          })}
+        </FormContainer>
         <Button
           color="inherit"
           disabled={activeStep === 0}
@@ -83,7 +132,7 @@ const DynamicPage = ({ steps }) => {
             <Button>Submit</Button>
           </>
         )}
-      </Box>
+      </ParentContainer>
     </>
   );
 };
